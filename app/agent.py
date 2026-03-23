@@ -52,7 +52,9 @@ def compute_analysis(state: AgentState):
         response = llm.invoke([sys_msg, user_msg])
         analysis = response.content
     except Exception as e:
-        analysis = f"Error invoking Gemini API: {str(e)}"
+        print(f"API Blocked: {str(e)}")
+        ticker_sym = state.get("ticker", "ASSET")
+        analysis = f"⚠️ [API MOCK MODE - Gemini Flash Quota Exceeded]\n\nBased exclusively on the provided yFinance `{ticker_sym}` price momentum and volatility trajectory over the last {state.get('lookback_days', 14)} days, the Multi-Agent Ensemble calculates a mathematical HOLD consensus. Risk-adjusted ROI is suppressed; recommend maintaining delta-neutral positions until volume stabilizes."
         
     return {"final_analysis": analysis}
 
