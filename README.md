@@ -16,18 +16,18 @@
 ## 🏗️ Architecture
 ```mermaid
 graph TD
-    A[FastAPI Endpoint: POST /analyze] -->|Ticker & Lookback| B(StateGraph: Fetch Node)
-    B -->|yfinance API Calls| C{(Raw Financial Data State)}
-    C --> D(StateGraph: Analyst Node)
-    D -->|LangChain + Gemini 1.5| E[Final Buy/Sell/Hold Signal]
-    E --> F[API JSON Response]
+    A[Premium Bloomberg UI Dashboard] -->|User Inputs Ticker| B(FastAPI Endpoint: POST /analyze)
+    B -->|State Trigger| C(LangGraph: Fetch Node)
+    C -->|yfinance Data Streams| D{(Market Fundamentals State)}
+    D --> E(LangGraph: Analyst Node)
+    E -->|Gemini 1.5 Flash Reasoning| F[Multi-Agent Synergy Output]
+    F -->|JSON Response| G[Dashboard Terminal Display]
 ```
 
-## 🧠 How it Works
-1. **Request Trigger:** A REST POST call is made to the FastAPI backend containing a stock ticker.
-2. **Fetch Node:** The LangGraph execution flow triggers the Data Fetcher, pulling historical pricing, moving averages, and sector info via `yfinance`.
-3. **Analyst Node:** The raw financial state is passed into a highly specialized Gemini 1.5 System Prompt acting as a Senior Quantitative Analyst. 
-4. **Synthesis:** The LLM evaluates the context window strictly against financial principles to output an optimized trading thesis.
+## 🧠 Core Features
+1. **Multi-Agent Orchestration**: Replaces standard prompts with an autonomous LangGraph lifecycle mimicking a real quantitative analyst pipeline.
+2. **Bloomberg-Style Dark UI**: An immersive, localized dashboard mapping agentic states directly onto a real-time terminal UI.
+3. **Data-Driven Analysis**: Leverages direct Python `yfinance` pipelines so the LLM calculates decisions strictly on live numbers.
 
 ## 🛠️ Setup & Installation
 

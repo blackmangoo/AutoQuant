@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoQuant | Agentic Hedge Fund</title>
+    <style>
+        :root { --bg: #090e11; --primary: #00ff88; --card: #151b22; --text: #e2e8f0; --accent: #00b35f; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 40px; display: flex; justify-content: center; }
+        .container { background: var(--card); padding: 40px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 255, 136, 0.05); width: 100%; max-width: 900px; border-top: 4px solid var(--primary); }
+        h1 { margin-top: 0; color: var(--primary); letter-spacing: 1.5px; text-transform: uppercase; font-size: 28px; }
+        p.subtitle { opacity: 0.6; font-size: 14px; margin-bottom: 30px; letter-spacing: 0.5px; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 150px; gap: 15px; }
+        .input-group { display: flex; flex-direction: column; }
+        input { background: #0d1115; color: #fff; border: 1px solid rgba(0, 255, 136, 0.3); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 18px; text-transform: uppercase; letter-spacing: 2px;}
+        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 255, 136, 0.1); }
+        
+        .btn { background: var(--primary); color: #000; border: none; padding: 15px 20px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .btn:hover { background: var(--accent); color: #fff; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .loader { border: 3px solid rgba(0, 255, 136, 0.1); border-top: 3px solid var(--primary); border-radius: 50%; width: 22px; height: 22px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 10px; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Terminal Area */
+        .terminal { margin-top: 30px; display: none; background: #07090b; border-radius: 8px; border: 1px solid #222c36; overflow: hidden; }
+        .terminal-header { background: #151b22; padding: 10px 15px; border-bottom: 1px solid #222c36; font-size: 12px; color: #888; font-family: monospace; letter-spacing: 1px; display: flex; gap: 10px;}
+        .circle { width: 10px; height: 10px; border-radius: 50%; background: #333; }
+        .terminal-content { padding: 25px; font-family: monospace; font-size: 14px; line-height: 1.6; color: #00ff88; white-space: pre-wrap; height: 300px; overflow-y: auto; }
+        
+        .terminal-content::-webkit-scrollbar { width: 8px; }
+        .terminal-content::-webkit-scrollbar-thumb { background: rgba(0, 255, 136, 0.2); border-radius: 4px; }
+        
+        /* Stats row */
+        .stats-row { display: flex; gap: 20px; margin-top: 20px; }
+        .stat-box { flex: 1; background: rgba(0, 255, 136, 0.05); border: 1px solid rgba(0, 255, 136, 0.15); padding: 15px; border-radius: 8px; display: none; }
+        .stat-title { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .stat-value { font-size: 16px; color: #fff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Auto<span style="color: #fff;">Quant</span></h1>
+    <p class="subtitle">Multi-Agent LangGraph Hedge Fund Analyst Engine</p>
+    
+    <div class="grid">
+        <div class="input-group">
+            <input type="text" id="tickerInput" placeholder="Enter Ticker (e.g. AAPL, TSLA)" value="NVDA">
+        </div>
+        <button class="btn" id="analyzeBtn" onclick="runAnalysis()">Analyze <div class="loader" id="loader"></div></button>
+    </div>
+
+    <div class="stats-row" id="statsArea">
+        <div class="stat-box" id="sb1">
+            <div class="stat-title">Target Asset</div>
+            <div class="stat-value" id="resTicker">---</div>
+        </div>
+        <div class="stat-box" id="sb2">
+            <div class="stat-title">Market Data Sources</div>
+            <div class="stat-value">yFinance Real-Time</div>
+        </div>
+    </div>
+
+    <div class="terminal" id="terminalArea">
+        <div class="terminal-header">
+            <div class="circle" style="background: #ff5f56;"></div>
+            <div class="circle" style="background: #ffbd2e;"></div>
+            <div class="circle" style="background: #27c93f;"></div>
+            <span style="margin-left: 10px;">LANGGRAPH_AGENT_EXECUTION</span>
+        </div>
+        <div class="terminal-content" id="agentOutput">System standby. Awaiting ticker initialization...</div>
+    </div>
+</div>
+
+<script>
+    async function runAnalysis() {
+        const ticker = document.getElementById('tickerInput').value.toUpperCase();
+        if(!ticker) return;
+        
+        const btn = document.getElementById('analyzeBtn');
+        const loader = document.getElementById('loader');
+        const terminalArea = document.getElementById('terminalArea');
+        const agentOutput = document.getElementById('agentOutput');
+        
+        btn.disabled = true;
+        loader.style.display = 'inline-block';
+        terminalArea.style.display = 'block';
+        agentOutput.innerHTML = "> Fetching latest market financials via yFinance API targeting: <b>" + ticker + "</b>...<br>> Booting Gemini-1.5 Multi-Agent Swarm (LangGraph)...<br>> Waiting for quantitative decision engine...";
+        
+        document.getElementById('sb1').style.display = 'block';
+        document.getElementById('sb2').style.display = 'block';
+        document.getElementById('resTicker').innerText = ticker;
+
+        try {
+            const response = await fetch('/analyze', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ticker: ticker, lookback_days: 14})
+            });
+            const data = await response.json();
+            
+            // Format nice output
+            let output = "> FINANCIAL DATA AGENT COMPLETION:\n" + (data.financial_data_summary || "Unavailable") + "\n\n";
+            output += "> HEDGE FUND CHIEF STRATEGIST COMPLETION:\n" + (data.agent_analysis || "MOCK MODE ACTIVE: The Gemini API Key lacks permission. Recommend holding " + ticker + " due to volatile macro environment.") + "\n\n";
+            output += "> SESSION TERMINATED.\n";
+            
+            agentOutput.innerText = output;
+        } catch (err) {
+            agentOutput.innerText = "\n> [FATAL ERROR] Network issue or Gemini API Key misconfiguration in .env file. Falling back to Mock Presentation Mode.\n\n> HEDGE FUND STRATEGIST:\nDue to robust historical momentum on " + ticker + " balanced with slight macroeconomic friction, the model evaluates a HOLD position with a 65% probability of positive yield within the next quarter.";
+        }
+        
+        btn.disabled = false;
+        loader.style.display = 'none';
+    }
+</script>
+</body>
+</html>

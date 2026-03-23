@@ -1,7 +1,10 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Dict, Any
 from app.agent import run_agent
+import os
 
 app = FastAPI(
     title="AutoQuant Financial Agent API",
@@ -13,9 +16,13 @@ class AnalysisRequest(BaseModel):
     ticker: str
     lookback_days: int = 14
 
-@app.get("/")
+os.makedirs("app/static", exist_ok=True)
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
 def read_root():
-    return {"status": "AutoQuant Engine Running inside FastAPI"}
+    with open("app/static/index.html", "r") as f:
+        return f.read()
 
 @app.post("/analyze")
 def trigger_analysis(req: AnalysisRequest) -> Dict[str, Any]:
