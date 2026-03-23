@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Dict, Any
+from app.agent import run_agent
 
 app = FastAPI(
     title="AutoQuant Financial Agent API",
@@ -10,7 +11,7 @@ app = FastAPI(
 
 class AnalysisRequest(BaseModel):
     ticker: str
-    lookback_days: int = 30
+    lookback_days: int = 14
 
 @app.get("/")
 def read_root():
@@ -18,21 +19,16 @@ def read_root():
 
 @app.post("/analyze")
 def trigger_analysis(req: AnalysisRequest) -> Dict[str, Any]:
-    # TODO: Integrate LangGraph multi-agent workflow here
-    # 1. Fetch live market info via yfinance
-    # 2. Trigger risk analyst and fundamentals analyst agents
-    # 3. Compile output
+    # Run the LangGraph Multi-Agent workflow
+    result_state = run_agent(ticker=req.ticker, lookback=req.lookback_days)
     
     return {
         "ticker": req.ticker,
         "status": "success",
-        "message": "Agentic loop triggered (Mocked).",
-        "mock_signals": {
-            "trend": "BULLISH",
-            "confidence": 0.85
-        }
+        "financial_data_summary": result_state.get("raw_financial_data", ""),
+        "agent_analysis": result_state.get("final_analysis", "")
     }
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
