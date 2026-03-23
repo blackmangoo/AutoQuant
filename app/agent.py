@@ -24,8 +24,11 @@ def fetch_financial_data(state: AgentState):
     # Extract simple summary of historical financial data
     try:
         hist = stock.history(period=f"{state['lookback_days']}d")
+        if hist is None or hist.empty:
+            raise Exception("yFinance API returned no data (Throttled/Rate-Limited).")
+            
         close_prices = hist['Close'].tolist()
-        info = stock.info
+        info = stock.info or {}
         
         data_summary = f"Company: {info.get('longName', ticker_sym)}\n"
         data_summary += f"Sector: {info.get('sector', 'N/A')}\n"
